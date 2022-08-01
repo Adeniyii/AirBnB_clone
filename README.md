@@ -35,7 +35,23 @@ Destroy an object | ```(hbnb) destroy <class> <id>``` or ```(hbnb) <class>.destr
 Show all objects, or all instances of a class | ```(hbnb) all``` or ```(hbnb) all <class>```
 Update an attribute of an object | ```(hbnb) update <class> <id> <attribute name> "<attribute value>"``` or ```(hbnb) <class>.update(<id>, <attribute name>, "<attribute value>")```
 
-Non-interactive mode example
+### Interactive mode
+
+```bash
+$ ./console.py
+(hbnb) help
+
+Documented commands (type help <topic>):
+========================================
+EOF  help  quit
+
+(hbnb)
+(hbnb)
+(hbnb) quit
+$
+```
+
+### Non-interactive mode
 
 ```bash
 $ echo "help" | ./console.py
@@ -43,7 +59,20 @@ $ echo "help" | ./console.py
 
 Documented commands (type help <topic>):
 ========================================
-EOF  all  count  create  destroy  help  quit  show  update
+EOF  help  quit
+(hbnb)
+$
+$ cat test_help
+help
+$
+$ cat test_help | ./console.py
+(hbnb)
+
+Documented commands (type help <topic>):
+========================================
+EOF  help  quit
+(hbnb)
+$
 ```
 
 ## Testing :straight_ruler:
@@ -63,5 +92,6 @@ $ python3 unittest -m tests/test_console.py
 
 
 ## Authors :black_nib:
-* **Ijabadeniyi Ifedayo** <[Adeniyii](https://github.com/Adeniyii)>
+
 * **Atabong Cecilia** <[cecilia-89](https://github.com/cecilia-89)>
+* **Ijabadeniyi Ifedayo** <[Adeniyii](https://github.com/Adeniyii)>
