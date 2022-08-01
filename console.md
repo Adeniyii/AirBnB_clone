@@ -14,3 +14,5 @@ A `Cmd` instance or subclass instance is a line-oriented interpreter framework. 
   - This method will return when the `postcmd()` method returns a `true` value. The stop argument to `postcmd()` is the return value from the command’s corresponding `do_*()` method.
 - An end-of-file on input is passed back as the string 'EOF'.
 - An interpreter instance will recognize a command name `foo` if and only if it has a method `do_foo()`. As a special case, a line beginning with the character '?' is dispatched to the method `do_help()`. As another special case, a line beginning with the character '!' is dispatched to the method `do_shell()` (if such a method is defined).
+- Implement `do_EOF()` to gracefully catch errors.
+- Implement `emptyline()` to override default `empty line + return` behaviour.
