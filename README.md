@@ -35,7 +35,7 @@ Destroy an object | ```(hbnb) destroy <class> <id>``` or ```(hbnb) <class>.destr
 Show all objects, or all instances of a class | ```(hbnb) all``` or ```(hbnb) all <class>```
 Update an attribute of an object | ```(hbnb) update <class> <id> <attribute name> "<attribute value>"``` or ```(hbnb) <class>.update(<id>, <attribute name>, "<attribute value>")```
 
-### Interactive mode
+### Interactive mode (example)
 
 ```bash
 $ ./console.py
@@ -51,7 +51,7 @@ EOF  help  quit
 $
 ```
 
-### Non-interactive mode
+### Non-interactive mode (example)
 
 ```bash
 $ echo "help" | ./console.py
