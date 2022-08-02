@@ -24,8 +24,13 @@ Typical usage example:
     (hbnb)
     (hbnb) quit
     $
+
+Todo:
+    * Task 7
+    - import completed BaseModel
 """
 import cmd
+from models import base_model
 
 
 class HBNBCommand(cmd.Cmd):
@@ -41,6 +46,7 @@ class HBNBCommand(cmd.Cmd):
     """
 
     prompt = "(hbnb) "
+    current_classes = {'BaseModel': base_model.BaseModel}
 
     def do_help(self, arg):
         """To get help on a command, type help <topic>\n"""
@@ -57,6 +63,32 @@ class HBNBCommand(cmd.Cmd):
     def emptyline(self):
         """Override default `empty line + return` behaviour\n"""
         pass
+
+    def do_create(self, arg: str):
+        args = arg.split()
+
+        if not validate_classname(args[0]):
+            return
+
+        new_obj = self.current_classes[args[0]]()
+        new_obj.save()
+        print(new_obj.id)
+
+    def help_create(self):
+        print('\n'.join([
+            "Usage: create <class>",
+            "\nCreates a new <classname> instance\n"]))
+
+
+def validate_classname(self, arg):
+    """Runs checks on arg to validate classname entry."""
+    if arg.strip() == "":
+        print("** class name missing **\n")
+        return False
+    if arg not in self.current_classes.keys():
+        print("** class doesn't exist **\n")
+        return False
+    return True
 
 
 if __name__ == "__main__":
