@@ -24,10 +24,6 @@ Typical usage example:
     (hbnb)
     (hbnb) quit
     $
-
-Todo:
-    * Task 7
-    - import completed BaseModel
 """
 import cmd
 from models import storage
@@ -82,18 +78,19 @@ class HBNBCommand(cmd.Cmd):
 
     def do_show(self, arg):
         args = arg.split()
+
         if not validate_classname(args, check_id=True):
             return
 
-        key = "{}.{}".format(args[0], args[1])
         instance_objs = storage.all()
+        key = "{}.{}".format(args[0], args[1])
+        req_instance = instance_objs.get(key, None)
 
-        try:
-            req_instance = instance_objs[key]
-        except AttributeError:
+        if req_instance is None:
             print("** no instance found **")
-        else:
-            print(req_instance)
+            return
+
+        print(req_instance)
 
     def help_show(self):
         print('\n'.join([
