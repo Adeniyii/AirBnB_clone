@@ -31,6 +31,7 @@ Todo:
 """
 import cmd
 from models import base_model
+from models import storage
 
 
 class HBNBCommand(cmd.Cmd):
@@ -78,6 +79,30 @@ class HBNBCommand(cmd.Cmd):
         print('\n'.join([
             "Usage: create <class>",
             "\nCreates a new <classname> instance\n"]))
+
+    def do_show(self, arg):
+        args = arg.split()
+
+        if not validate_classname(args[0]):
+            return
+        if args[1].strip() == "":
+            print("** instance id missing **")
+            return
+
+        key = "{}.{}".format(args[0], args[1])
+        instance_objs = storage.all()
+
+        try:
+            req_instance = getattr(instance_objs, key)
+        except AttributeError:
+            print("** no instance found **")
+        else:
+            print(req_instance)
+
+    def help_show(self):
+        print('\n'.join([
+            "Usage: show <classname> <id>",
+            "\nPrints the string representation of an instance\n"]))
 
 
 def validate_classname(self, arg):
