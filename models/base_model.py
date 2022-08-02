@@ -31,6 +31,8 @@ class BaseModel():
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
 
+        # Added this call here to add the new instance of
+        # `BaseModel` to `FileStorage.__object`.
         models.storage.new(self)
 
     def __str__(self):
