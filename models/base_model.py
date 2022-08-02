@@ -1,9 +1,11 @@
-#!/usr/bin/``python3
+#!/usr/bin/python3
 """
 Module: base.py
 """
 import uuid
+import re
 from datetime import datetime
+from models import storage
 
 class BaseModel():
     """
@@ -15,14 +17,13 @@ class BaseModel():
         instatiates an object with it's
         attributes
         """
+        re.compile('/d{2,4}-/d{2,4}-(/d{2}-)*
         if kwargs:
             for key, value in kwargs.items():
                 if key != '__class__':
-                    if key.endswith('at'):
+                    if key.endswith('ted_at'):
                         value = datetime.fromisoformat(value)
-                    
                     setattr(self,key,value)
-
             return
         
         self.id = str(uuid.uuid4())
@@ -42,6 +43,7 @@ class BaseModel():
         updated_at with the current datetime
         """
         self.updated_at = datetime.now()
+        storage.save()
 
     def to_dict(self):
         """
