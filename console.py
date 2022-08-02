@@ -30,8 +30,10 @@ Todo:
     - import completed BaseModel
 """
 import cmd
-from models import base_model
 from models import storage
+from models.base_model import BaseModel
+
+current_classes = {'BaseModel': BaseModel}
 
 
 class HBNBCommand(cmd.Cmd):
@@ -47,7 +49,6 @@ class HBNBCommand(cmd.Cmd):
     """
 
     prompt = "(hbnb) "
-    current_classes = {'BaseModel': base_model.BaseModel}
 
     def do_help(self, arg):
         """To get help on a command, type help <topic>\n"""
@@ -67,11 +68,10 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, arg: str):
         args = arg.split()
-
-        if not validate_classname(args[0]):
+        if not validate_classname(args):
             return
 
-        new_obj = self.current_classes[args[0]]()
+        new_obj = current_classes[args[0]]()
         new_obj.save()
         print(new_obj.id)
 
@@ -82,18 +82,14 @@ class HBNBCommand(cmd.Cmd):
 
     def do_show(self, arg):
         args = arg.split()
-
-        if not validate_classname(args[0]):
-            return
-        if args[1].strip() == "":
-            print("** instance id missing **")
+        if not validate_classname(args, check_id=True):
             return
 
         key = "{}.{}".format(args[0], args[1])
         instance_objs = storage.all()
 
         try:
-            req_instance = getattr(instance_objs, key)
+            req_instance = instance_objs[key]
         except AttributeError:
             print("** no instance found **")
         else:
@@ -105,14 +101,17 @@ class HBNBCommand(cmd.Cmd):
             "\nPrints the string representation of an instance\n"]))
 
 
-def validate_classname(self, arg):
+def validate_classname(args, check_id=False):
     """Runs checks on arg to validate classname entry."""
-    if arg.strip() == "":
-        print("** class name missing **\n")
+    if len(args) < 1:
+        print("** class name missing ** ")
         return False
-    if arg not in self.current_classes.keys():
-        print("** class doesn't exist **\n")
+    if args[0] not in current_classes.keys():
+        print("** class doesn't exist ** ")
         return False
+    if len(args) < 2 and check_id:
+        print("** instance id missing **")
+        return
     return True
 
 
