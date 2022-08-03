@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/python3
 """The `city` module
 
 It defines one class, `City(),

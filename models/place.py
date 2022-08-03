@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/python3
 """The `place` module
 
 It defines one class, `Place(),

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/python3
 """The `amenity` module
 
 It defines one class, `Amenity(),

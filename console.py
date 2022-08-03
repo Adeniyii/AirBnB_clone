@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """This module defines the entry point of the command interpreter.
 
 It defines one class, `HBNBCommand()`, which sub-classes the `cmd.Cmd` class.
@@ -130,7 +130,6 @@ class HBNBCommand(cmd.Cmd):
         """Prints string representation of all instances based
         or not on the class name
         """
-        print(arg)
         args = arg.split()
         all_objs = storage.all()
 
