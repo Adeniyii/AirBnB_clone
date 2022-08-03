@@ -26,6 +26,10 @@ Typical usage example:
     $
 """
 import cmd
+from models import storage
+from models.base_model import BaseModel
+
+current_classes = {'BaseModel': BaseModel}
 
 
 class HBNBCommand(cmd.Cmd):
@@ -57,6 +61,55 @@ class HBNBCommand(cmd.Cmd):
     def emptyline(self):
         """Override default `empty line + return` behaviour\n"""
         pass
+
+    def do_create(self, arg: str):
+        args = arg.split()
+        if not validate_classname(args):
+            return
+
+        new_obj = current_classes[args[0]]()
+        new_obj.save()
+        print(new_obj.id)
+
+    def help_create(self):
+        print('\n'.join([
+            "Usage: create <class>",
+            "\nCreates a new <classname> instance\n"]))
+
+    def do_show(self, arg):
+        args = arg.split()
+
+        if not validate_classname(args, check_id=True):
+            return
+
+        instance_objs = storage.all()
+        key = "{}.{}".format(args[0], args[1])
+        req_instance = instance_objs.get(key, None)
+
+        if req_instance is None:
+            print("** no instance found **")
+            return
+
+        print(req_instance)
+
+    def help_show(self):
+        print('\n'.join([
+            "Usage: show <classname> <id>",
+            "\nPrints the string representation of an instance\n"]))
+
+
+def validate_classname(args, check_id=False):
+    """Runs checks on arg to validate classname entry."""
+    if len(args) < 1:
+        print("** class name missing ** ")
+        return False
+    if args[0] not in current_classes.keys():
+        print("** class doesn't exist ** ")
+        return False
+    if len(args) < 2 and check_id:
+        print("** instance id missing **")
+        return
+    return True
 
 
 if __name__ == "__main__":
