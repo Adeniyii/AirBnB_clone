@@ -62,7 +62,8 @@ class HBNBCommand(cmd.Cmd):
         """Override default `empty line + return` behaviour\n"""
         pass
 
-    def do_create(self, arg: str):
+    def do_create(self, arg):
+        """Creates a new <classname> instance"""
         args = arg.split()
         if not validate_classname(args):
             return
@@ -72,11 +73,13 @@ class HBNBCommand(cmd.Cmd):
         print(new_obj.id)
 
     def help_create(self):
+        """Prints the help message for the `create` command"""
         print('\n'.join([
             "Usage: create <class>",
             "\nCreates a new <classname> instance\n"]))
 
     def do_show(self, arg):
+        """Prints the string representation of an instance"""
         args = arg.split()
 
         if not validate_classname(args, check_id=True):
@@ -93,9 +96,34 @@ class HBNBCommand(cmd.Cmd):
         print(req_instance)
 
     def help_show(self):
+        """Prints the help message for the `show` command"""
         print('\n'.join([
             "Usage: show <classname> <id>",
             "\nPrints the string representation of an instance\n"]))
+
+    def do_destroy(self, arg):
+        """Deletes an instance based on the class name and id"""
+        args = arg.split()
+
+        if not validate_classname(args, check_id=True):
+            return
+
+        instance_objs = storage.all()
+        key = "{}.{}".format(args[0], args[1])
+        req_instance = instance_objs.get(key, None)
+
+        if req_instance is None:
+            print("** no instance found **")
+            return
+
+        del instance_objs[key]
+        storage.save()
+
+    def help_destroy(self):
+        """Prints the help message for the `destroy` command"""
+        print('\n'.join([
+            "Usage: destroy <classname> <id>",
+            "\nDeletes an instance based on the <class name> and <id>\n"]))
 
 
 def validate_classname(args, check_id=False):
