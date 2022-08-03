@@ -75,7 +75,7 @@ class HBNBCommand(cmd.Cmd):
     def help_create(self):
         """Prints the help message for the `create` command"""
         print('\n'.join([
-            "Usage: create <class>",
+            "Usage: create <classname>",
             "\nCreates a new <classname> instance\n"]))
 
     def do_show(self, arg):
@@ -125,6 +125,31 @@ class HBNBCommand(cmd.Cmd):
             "Usage: destroy <classname> <id>",
             "\nDeletes an instance based on the <class name> and <id>\n"]))
 
+    def do_all(self, arg):
+        """Prints string representation of all instances based
+        or not on the class name
+        """
+        args = arg.split()
+        all_objs = storage.all()
+
+        if len(args) < 1:
+            print(["{}".format(str(v)) for _, v in all_objs.items()])
+            return
+        if args[0] not in current_classes.keys():
+            print("** class doesn't exist ** ")
+            return
+        else:
+            print(["{}".format(str(v))
+                  for _, v in all_objs.items() if type(v).__name__ == args[0]])
+            return
+
+    def help_all(self):
+        """Prints the help message for the `all` command"""
+        print('\n'.join([
+            "Usage: all <classname>",
+            "\nPrints a list of str(<class>) for all objects, or objects",
+            "matching <classname>\n"]))
+
 
 def validate_classname(args, check_id=False):
     """Runs checks on arg to validate classname entry."""
@@ -136,7 +161,7 @@ def validate_classname(args, check_id=False):
         return False
     if len(args) < 2 and check_id:
         print("** instance id missing **")
-        return
+        return False
     return True
 
 
