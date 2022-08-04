@@ -47,6 +47,49 @@ class HBNBCommand(cmd.Cmd):
 
     prompt = "(hbnb) "
 
+    def precmd(self, line):
+        if not line:
+            return '\n'
+
+        # matching user input to this format -> `<class>.<command>([<option>])`
+        pattern = re.compile(r"([a-zA-Z]+)\.(\w+)\((.*)\)")
+        match_list = pattern.findall(line.split()[0])
+        instance_objs = storage.all()
+
+        # if no matches were found, hand off execution to default loop
+        if not match_list:
+            return super().precmd(line)
+
+        # matches come back as a list of a tuple of matched groups.
+        # e.g. [('User', 'all', '123-345-567-999')]
+        # extract tuple into `match_tuple` variable
+        match_tuple = match_list[0]
+        # if no <option> was provided, i.e. User.all() vs User.all(<id>)
+        if not match_tuple[2]:
+            # check if input == <class>.count()
+            # checking for this specifically because `do_count()` handler...
+            # ...doesn't exist.
+            if match_tuple[1] == "count":
+                print(len([
+                    v for _, v in instance_objs.items()
+                    if type(v).__name__ == match_tuple[0]]))
+                # trigger the emptyline() method
+                return "\n"
+            # returning from precmd() hands off the returned string...
+            # ...to the main command parser to execute as normal.
+            # e.g return "create User" triggers the `create` command...
+            # ...with `User` as an argument.
+            return "{} {}".format(match_tuple[1], match_tuple[0])
+        else:
+            # Handles if only one arg was provided between the parenthesis
+            # e.g User.show(3509c15a-8862-433c-a97f-56d6cb2e6020)
+            args = match_tuple[2].split(", ")
+            if len(args) == 1:
+                return "{} {} {}".format(match_tuple[1], match_tuple[0], re.sub("[\"\']", "", match_tuple[2]))  # nopep8: E501
+
+        # fallback to default behaviour
+        return super().precmd(line)
+
     def do_help(self, arg):
         """To get help on a command, type help <topic>\n"""
         return super().do_help(arg)
