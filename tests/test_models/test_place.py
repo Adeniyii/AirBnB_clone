@@ -10,4 +10,4 @@ class TestPlace(unittest.TestCase):
 
     def test_params(self):
         """"""
-        pass
+        
