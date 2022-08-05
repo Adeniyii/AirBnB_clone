@@ -4,6 +4,7 @@ from datetime import datetime
 
 b1 = BaseModel()
 b2 = BaseModel(**b1.to_dict())
+b3 = BaseModel("hello", "wait", )
 
 class TestBase(unittest.TestCase):
 
