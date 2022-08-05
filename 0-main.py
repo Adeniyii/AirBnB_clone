@@ -5,7 +5,8 @@ from models.user import User
 from models.amenity import Amenity
 
 a1 = Amenity('name', 'wait')
-string = f"[{type(a1).__name__}] ({a1.id}) {a1.__dict__}"
-print(a1.name)
-
+old_update = a1.updated_at
+print(old_update)
+a1.save()
+print(a1.updated_at)
 

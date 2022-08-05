@@ -24,6 +24,7 @@ class TestAmenity(unittest.TestCase):
         """Test method for public instances"""
         self.assertIsInstance(a1.id, str)
         self.assertIsInstance(a1.created_at, datetime)
+        self.assertIsInstance(a1.updated_at, datetime)
         self.assertEqual(a1.updated_at, a2.updated_at)
 
     def test_str(self):
@@ -33,13 +34,15 @@ class TestAmenity(unittest.TestCase):
 
     def test_save(self):
         """Test method for save"""
+        old_update = a1.updated_at
         a1.save()
-        self.assertGreater(a1.updated_at, a1.created_at)
+        self.assertNotEqual(a1.updated_at,old_update)
 
     def test_todict(self):
+        """Test method for dict"""
         a_dict = a2.to_dict()
         self.assertIsInstance(a_dict, dict)
-        self.assertIn('__class__', a_dict.keys())
+        self.assertEqual(a_dict['__class__'], type(a2).__name__ )
         self.assertIn('created_at', a_dict.keys())
         self.assertIn('updated_at', a_dict.keys())
 
