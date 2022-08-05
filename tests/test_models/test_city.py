@@ -10,7 +10,7 @@ class TestCity(unittest.TestCase):
     """Test cases for the `City` class."""
 
     def test_params(self):
-        """"""
+        """Test method for class attributes"""
         self.assertEqual(c1.name, "")
         self.assertEqual(c1.state_id, "")
         c1.name = "Abuja"
