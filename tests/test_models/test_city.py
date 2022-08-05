@@ -4,6 +4,7 @@
 import unittest
 from models.city import City
 
+c1 = City()
 
 class TestCity(unittest.TestCase):
     """Test cases for the `City` class."""
