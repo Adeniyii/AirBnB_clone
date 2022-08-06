@@ -29,8 +29,9 @@ import re
 import cmd
 from models import storage
 from models.base_model import BaseModel
+from models.user import User
 
-current_classes = {'BaseModel': BaseModel}
+current_classes = {'BaseModel': BaseModel, 'User': User}
 
 
 class HBNBCommand(cmd.Cmd):
@@ -53,7 +54,7 @@ class HBNBCommand(cmd.Cmd):
 
         # matching user input to this format -> `<class>.<command>([<option>])`
         pattern = re.compile(r"([a-zA-Z]+)\.(\w+)\((.*)\)")
-        match_list = pattern.findall(line.split()[0])
+        match_list = pattern.findall(line)
         instance_objs = storage.all()
 
         # if no matches were found, hand off execution to default loop
@@ -83,11 +84,15 @@ class HBNBCommand(cmd.Cmd):
         else:
             # Handles if only one arg was provided between the parenthesis
             # e.g User.show(3509c15a-8862-433c-a97f-56d6cb2e6020)
-            args = match_tuple[2].split(", ")
-            if len(args) == 1:
+
+            if len(match_tuple) == 3:
                 return "{} {} {}".format(match_tuple[1], match_tuple[0], re.sub("[\"\']", "", match_tuple[2]))  # nopep8: E501
 
-        # fallback to default behaviour
+            elif len(match_tuple) == 5:
+                return "{} {} {} {} {}".format(match_tuple[1], match_tuple[0], match_tuple[2],
+                                               match_tuple[3], match_tuple[4])
+
+         # fallback to default behaviour
         return super().precmd(line)
 
     def do_help(self, arg):
@@ -196,7 +201,8 @@ class HBNBCommand(cmd.Cmd):
 
     def do_update(self, arg):
         """Updates an instance based on the class name and id"""
-        args = arg.split()
+        new_arg = arg.replace(', ', ' ')
+        args = new_arg.split()
 
         if not validate_classname(args, check_id=True):
             return
@@ -212,7 +218,7 @@ class HBNBCommand(cmd.Cmd):
         if not validate_attrs(args):
             return
 
-        if args[2] == "id" or args[2] == "created_at" or args[2] == "updated_at":  # nopep8: E501
+        if args[2] == "id" or args[2] == "updated_at" or args[2] == "created_at":  # nopep8: E501
             return
 
         setattr(req_instance, args[2], parse_str(args[3]))

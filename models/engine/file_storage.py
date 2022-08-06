@@ -5,6 +5,12 @@ Module: file_storage.py
 import os
 import json
 from models.base_model import BaseModel
+from models.user import User
+from models.state import State
+from models.city import City
+from models.review import Review
+from models.amenity import Amenity
+from models.place import Place
 
 
 class FileStorage():
@@ -42,6 +48,10 @@ class FileStorage():
         deserializes the JSON file to __objects only if the JSON
         file exists; otherwise, does nothing
         """
+        current_classes = {'BaseModel': BaseModel, 'User': User,
+                           'Amenity': Amenity, 'City': City, 'State': State,
+                           'Place': Place, 'Review': Review}
+
         if not os.path.exists(FileStorage.__file_path):
             return
 
@@ -57,4 +67,5 @@ class FileStorage():
                 return
 
             FileStorage.__objects = {
-                k: BaseModel(**v) for k, v in deserialized.items()}
+                k: current_classes[k.split('.')[0]](**v)
+                for k, v in deserialized.items()}
