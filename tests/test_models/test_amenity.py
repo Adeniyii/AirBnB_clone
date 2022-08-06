@@ -45,6 +45,7 @@ class TestAmenity(unittest.TestCase):
         self.assertEqual(a_dict['__class__'], type(a2).__name__ )
         self.assertIn('created_at', a_dict.keys())
         self.assertIn('updated_at', a_dict.keys())
+        self.assertNotEqual(a1, a2)
 
 if __name__ == "__main__":
 	unittest.main()

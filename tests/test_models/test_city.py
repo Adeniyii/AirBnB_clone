@@ -42,6 +42,7 @@ class TestCity(unittest.TestCase):
         self.assertEqual(a_dict['__class__'], type(c2).__name__ )
         self.assertIn('created_at', a_dict.keys())
         self.assertIn('updated_at', a_dict.keys())
+        self.assertNotEqual(c1, c2)
 
 if __name__ == "__main__":
 	unittest.main()

@@ -28,6 +28,7 @@ class TestBase(unittest.TestCase):
 		self.assertEqual(b1_dict['__class__'], type(b1).__name__ )
 		self.assertIn('created_at', b1_dict.keys())
 		self.assertIn('updated_at', b1_dict.keys())
+		self.assertNotEqual(b1, b2)
 
 	def test_save(self):
 		"""Test method for save"""
