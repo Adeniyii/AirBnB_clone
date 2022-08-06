@@ -211,7 +211,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_update(self, arg: str):
         """Updates an instance based on the class name and id"""
-        args = arg.split()
+        args = arg.split(maxsplit=3)
 
         if not validate_classname(args, check_id=True):
             return
