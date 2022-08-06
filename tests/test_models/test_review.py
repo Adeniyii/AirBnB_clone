@@ -10,6 +10,7 @@ r1 = Review()
 r2 = Review(**r1.to_dict())
 r3 = Review("hello", "wait", "in")
 
+
 class TestReview(unittest.TestCase):
     """Test cases for the `Review` class."""
 
@@ -39,16 +40,17 @@ class TestReview(unittest.TestCase):
         """Test method for save"""
         old_update = r1.updated_at
         r1.save()
-        self.assertNotEqual(r1.updated_at,old_update)
+        self.assertNotEqual(r1.updated_at, old_update)
 
     def test_todict(self):
         """Test method for dict"""
         a_dict = r2.to_dict()
         self.assertIsInstance(a_dict, dict)
-        self.assertEqual(a_dict['__class__'], type(r2).__name__ )
+        self.assertEqual(a_dict['__class__'], type(r2).__name__)
         self.assertIn('created_at', a_dict.keys())
         self.assertIn('updated_at', a_dict.keys())
         self.assertNotEqual(r1, r2)
 
+
 if __name__ == "__main__":
-	unittest.main()
+    unittest.main()
