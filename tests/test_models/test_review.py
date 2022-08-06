@@ -15,12 +15,13 @@ class TestReview(unittest.TestCase):
 
     def test_params(self):
         """Test method for class attributes"""
-        
-        k = f"{type(a1).__name__}.{a1.id}"
+
+        k = f"{type(r1).__name__}.{r1.id}"
         self.assertIn(k, storage.all())
         self.assertIsInstance(r1.text, str)
         self.assertIsInstance(r1.user_id, str)
         self.assertIsInstance(r1.place_id, str)
+        self.assertEqual(r3.text, "")
 
     def test_init(self):
         """Test method for public instances"""
