@@ -199,8 +199,12 @@ class HBNBCommand(cmd.Cmd):
             return
         if not validate_attrs(args):
             return
-
-        setattr(req_instance, args[2], parse_str(args[3]))
+        first_attr = re.findall(r"^[\"\'](.*?)[\"\']", parse_str(args[3]))
+        if first_attr:
+            setattr(req_instance, args[2], first_attr[0])
+        else:
+            value_list = args[3].split()
+            setattr(req_instance, args[2], parse_str(value_list[0]))
         storage.save()
 
 
@@ -264,7 +268,7 @@ def parse_str(arg):
     elif is_float(parsed):
         return float(parsed)
     else:
-        return parsed
+        return arg
 
 
 if __name__ == "__main__":
