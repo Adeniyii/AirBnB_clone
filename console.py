@@ -49,77 +49,67 @@ class HBNBCommand(cmd.Cmd):
     prompt = "(hbnb) "
 
     def precmd(self, line):
-        """Defines instructions to execute after the input prompt is generated
-        and issued, but before `line`is interpreted. The return value
-        represents the command to be executed by the interpreter.
+        """Defines instructions to execute before <line> is interpreted.
         """
         if not line:
             return '\n'
 
-        # print(line)
-        # matching user input to this format -> `<class>.<command>([<option>])`
         pattern = re.compile(r"(\w+)\.(\w+)\((.*)\)")
         match_list = pattern.findall(line)
-
-        # if no matches were found, hand off execution to default loop
         if not match_list:
             return super().precmd(line)
 
-        # matches come back as a list of a tuple of matched groups.
-        # e.g. [('User', 'all', '123-345-567-999')]
-        # extract tuple into `match_tuple` variable
         match_tuple = match_list[0]
-        # if no <option> was provided, i.e. User.all() vs User.all(<id>)
         if not match_tuple[2]:
-            # check if input == <class>.count()
-            # checking for this specifically because `do_count()` handler...
-            # ...doesn't exist.
             if match_tuple[1] == "count":
                 instance_objs = storage.all()
                 print(len([
-                    v for _, v in instance_objs.items() if type(v).__name__ == match_tuple[0]]))  # nopep8: E501
-                # trigger the emptyline() method
+                    v for _, v in instance_objs.items()
+                    if type(v).__name__ == match_tuple[0]]))
                 return "\n"
-            # returning from precmd() hands off the returned string...
-            # ...to the main command parser to execute as normal.
-            # e.g return "create User" triggers the `create` command...
-            # ...with `User` as an argument.
             return "{} {}".format(match_tuple[1], match_tuple[0])
         else:
-            # Handles if only one arg was provided between the parenthesis
-            # e.g User.show(3509c15a-8862-433c-a97f-56d6cb2e6020)
             args = match_tuple[2].split(", ")
             if len(args) == 1:
                 return "{} {} {}".format(
-                    match_tuple[1], match_tuple[0], re.sub("[\"\']", "", match_tuple[2]))  # nopep8: E501
+                    match_tuple[1], match_tuple[0],
+                    re.sub("[\"\']", "", match_tuple[2]))
             else:
-                # if args[1] contains an object
                 match_json = re.findall(r"{.*}", match_tuple[2])
                 if (match_json):
                     return "{} {} {} {}".format(
-                        match_tuple[1], match_tuple[0], re.sub("[\"\']", "", args[0]), re.sub("\'", "\"", match_json[0]))  # nopep8: E501
+                        match_tuple[1], match_tuple[0],
+                        re.sub("[\"\']", "", args[0]),
+                        re.sub("\'", "\"", match_json[0]))
                 return "{} {} {} {} {}".format(
-                    match_tuple[1], match_tuple[0], re.sub("[\"\']", "", args[0]), re.sub("[\"\']", "", args[1]), args[2])  # nopep8: E501
+                    match_tuple[1], match_tuple[0],
+                    re.sub("[\"\']", "", args[0]),
+                    re.sub("[\"\']", "", args[1]), args[2])
 
     def do_help(self, arg):
-        """To get help on a command, type help <topic>\n"""
+        """To get help on a command, type help <topic>.
+        """
         return super().do_help(arg)
 
     def do_EOF(self, line):
-        """Inbuilt EOF command to gracefully catch errors\n"""
+        """Inbuilt EOF command to gracefully catch errors.
+        """
         print("")
         return True
 
     def do_quit(self, arg):
-        """Quit command to exit the program\n"""
+        """Quit command to exit the program.
+        """
         return True
 
     def emptyline(self):
-        """Override default `empty line + return` behaviour\n"""
+        """Override default `empty line + return` behaviour.
+        """
         pass
 
     def do_create(self, arg):
-        """Creates a new <class name> instance"""
+        """Creates a new instance.
+        """
         args = arg.split()
         if not validate_classname(args):
             return
@@ -128,48 +118,31 @@ class HBNBCommand(cmd.Cmd):
         new_obj.save()
         print(new_obj.id)
 
-    def help_create(self):
-        """Prints the help message for the `create` command"""
-        print('\n'.join([
-            "Usage: create <class name>",
-            "Alternatively: <class name>.create()",
-            "\nCreates a new <class name> instance.\n"]))
-
     def do_show(self, arg):
-        """Prints the string representation of an instance"""
+        """Prints the string representation of an instance.
+        """
         args = arg.split()
-
         if not validate_classname(args, check_id=True):
             return
 
         instance_objs = storage.all()
         key = "{}.{}".format(args[0], args[1])
         req_instance = instance_objs.get(key, None)
-
         if req_instance is None:
             print("** no instance found **")
             return
-
         print(req_instance)
 
-    def help_show(self):
-        """Prints the help message for the `show` command"""
-        print('\n'.join([
-            "Usage: show <class name> <id>",
-            "Alternatively: <class name>.show(<id>)",
-            "\nPrints the string representation of an instance.\n"]))
-
     def do_destroy(self, arg):
-        """Deletes an instance based on the class name and id"""
+        """Deletes an instance based on the class name and id.
+        """
         args = arg.split()
-
         if not validate_classname(args, check_id=True):
             return
 
         instance_objs = storage.all()
         key = "{}.{}".format(args[0], args[1])
         req_instance = instance_objs.get(key, None)
-
         if req_instance is None:
             print("** no instance found **")
             return
@@ -177,16 +150,9 @@ class HBNBCommand(cmd.Cmd):
         del instance_objs[key]
         storage.save()
 
-    def help_destroy(self):
-        """Prints the help message for the `destroy` command"""
-        print('\n'.join([
-            "Usage: destroy <class name> <id>",
-            "Alternatively: <class name>.destroy(<id>)",
-            "\nDeletes an object based on the <class name> and <id>.\n"]))
-
     def do_all(self, arg):
-        """Prints string representation of all instances based
-        or not on the class name
+        """Usage: all or all <class> or <class>.all()
+        Prints string representation of all instances.
         """
         args = arg.split()
         all_objs = storage.all()
@@ -202,56 +168,37 @@ class HBNBCommand(cmd.Cmd):
                   for _, v in all_objs.items() if type(v).__name__ == args[0]])
             return
 
-    def help_all(self):
-        """Prints the help message for the `all` command"""
-        print('\n'.join([
-            "Usage: all [class name]",
-            "Alternatively: <class name>.all()",
-            "\nPrints a list of str(object) for all objects, or objects matching [class name].\n"]))  # nopep8: E501
-
     def do_update(self, arg: str):
-        """Updates an instance based on the class name and id"""
+        """Updates an instance based on the class name and id.
+        """
         args = arg.split(maxsplit=3)
-
         if not validate_classname(args, check_id=True):
             return
 
         instance_objs = storage.all()
         key = "{}.{}".format(args[0], args[1])
         req_instance = instance_objs.get(key, None)
-
         if req_instance is None:
             print("** no instance found **")
             return
 
         match_json = re.findall(r"{.*}", arg)
-
         if match_json:
             payload: dict = json.loads(match_json[0])
             for k, v in payload.items():
                 setattr(req_instance, k, v)
             storage.save()
             return
-
         if not validate_attrs(args):
-            return
-
-        if args[2] == "id" or args[2] == "created_at" or args[2] == "updated_at":  # nopep8: E501
             return
 
         setattr(req_instance, args[2], parse_str(args[3]))
         storage.save()
 
-    def help_update(self):
-        """Prints the help message for the `update` command"""
-        print('\n'.join([
-            "Usage: update <class name> <id> <attribute name> \"<attribute value>\"",  # nopep8: E501
-            "Alternatively: <class name>.update(<id>, <attribute name>, \"<attribute value>\")",  # nopep8: E501
-            "\nUpdates an instance based on the <class name> and <id>.\n"]))
-
 
 def validate_classname(args, check_id=False):
-    """Runs checks on args to validate classname entry."""
+    """Runs checks on args to validate classname entry.
+    """
     if len(args) < 1:
         print("** class name missing ** ")
         return False
@@ -265,8 +212,8 @@ def validate_classname(args, check_id=False):
 
 
 def validate_attrs(args):
-    """Runs checks on args to validate classname attributes
-    and values entry."""
+    """Runs checks on args to validate classname attributes and values.
+    """
     if len(args) < 3:
         print("** attribute name missing **")
         return False
@@ -277,7 +224,8 @@ def validate_attrs(args):
 
 
 def is_float(x):
-    """Checks if `x` is float"""
+    """Checks if `x` is float.
+    """
     try:
         a = float(x)
     except (TypeError, ValueError):
@@ -287,7 +235,8 @@ def is_float(x):
 
 
 def is_int(x):
-    """Checks if `x` is int"""
+    """Checks if `x` is int.
+    """
     try:
         a = float(x)
         b = int(a)
@@ -298,7 +247,8 @@ def is_int(x):
 
 
 def parse_str(arg):
-    """Parse `arg` to an `int`, `float` or `string`."""
+    """Parse `arg` to an `int`, `float` or `string`.
+    """
     parsed = re.sub("\"", "", arg)
 
     if is_int(parsed):
