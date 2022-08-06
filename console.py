@@ -192,7 +192,12 @@ class HBNBCommand(cmd.Cmd):
 
         match_json = re.findall(r"{.*}", arg)
         if match_json:
-            payload: dict = json.loads(match_json[0])
+            payload = None
+            try:
+                payload: dict = json.loads(match_json[0])
+            except Exception:
+                print("** invalid syntax")
+                return
             for k, v in payload.items():
                 setattr(req_instance, k, v)
             storage.save()
