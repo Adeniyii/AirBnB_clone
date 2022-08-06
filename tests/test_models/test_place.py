@@ -10,6 +10,7 @@ p1 = Place()
 p2 = Place(**p1.to_dict())
 p3 = Place("hello", "wait", "in")
 
+
 class TestPlace(unittest.TestCase):
     """Test cases for the `Place` class."""
 
@@ -49,16 +50,17 @@ class TestPlace(unittest.TestCase):
         """Test method for save"""
         old_update = p1.updated_at
         p1.save()
-        self.assertNotEqual(p1.updated_at,old_update)
+        self.assertNotEqual(p1.updated_at, old_update)
 
     def test_todict(self):
         """Test method for dict"""
         a_dict = p2.to_dict()
         self.assertIsInstance(a_dict, dict)
-        self.assertEqual(a_dict['__class__'], type(p2).__name__ )
+        self.assertEqual(a_dict['__class__'], type(p2).__name__)
         self.assertIn('created_at', a_dict.keys())
         self.assertIn('updated_at', a_dict.keys())
         self.assertNotEqual(p1, p2)
 
+
 if __name__ == "__main__":
-	unittest.main()
+    unittest.main()
