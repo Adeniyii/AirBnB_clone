@@ -30,8 +30,9 @@ import cmd
 import json
 from models import storage
 from models.base_model import BaseModel
+from models.user import User
 
-current_classes = {'BaseModel': BaseModel}
+current_classes = {'BaseModel': BaseModel, 'User': User}
 
 
 class HBNBCommand(cmd.Cmd):
@@ -58,6 +59,7 @@ class HBNBCommand(cmd.Cmd):
 
         # print(line)
         # matching user input to this format -> `<class>.<command>([<option>])`
+
         pattern = re.compile(r"(\w+)\.(\w+)\((.*)\)")
         match_list = pattern.findall(line)
 
@@ -211,6 +213,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_update(self, arg: str):
         """Updates an instance based on the class name and id"""
+
         args = arg.split(maxsplit=3)
 
         if not validate_classname(args, check_id=True):
@@ -236,7 +239,7 @@ class HBNBCommand(cmd.Cmd):
         if not validate_attrs(args):
             return
 
-        if args[2] == "id" or args[2] == "created_at" or args[2] == "updated_at":  # nopep8: E501
+        if args[2] == "id" or args[2] == "updated_at" or args[2] == "created_at":  # nopep8: E501
             return
 
         setattr(req_instance, args[2], parse_str(args[3]))
