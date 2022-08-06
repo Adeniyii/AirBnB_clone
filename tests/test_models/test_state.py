@@ -10,6 +10,7 @@ s1 = State()
 s2 = State(**s1.to_dict())
 s3 = State("hello", "wait", "in")
 
+
 class TestState(unittest.TestCase):
     """Test cases for the `State` class."""
 
@@ -37,18 +38,17 @@ class TestState(unittest.TestCase):
         """Test method for save"""
         old_update = s1.updated_at
         s1.save()
-        self.assertNotEqual(s1.updated_at,old_update)
+        self.assertNotEqual(s1.updated_at, old_update)
 
     def test_todict(self):
         """Test method for dict"""
         a_dict = s2.to_dict()
         self.assertIsInstance(a_dict, dict)
-        self.assertEqual(a_dict['__class__'], type(s2).__name__ )
+        self.assertEqual(a_dict['__class__'], type(s2).__name__)
         self.assertIn('created_at', a_dict.keys())
         self.assertIn('updated_at', a_dict.keys())
         self.assertNotEqual(s1, s2)
 
+
 if __name__ == "__main__":
-	unittest.main()
-
-
+    unittest.main()
