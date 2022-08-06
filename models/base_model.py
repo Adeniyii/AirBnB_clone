@@ -54,9 +54,6 @@ class BaseModel():
         returns a dictionary containing all keys/values
         of __dict__ of the instance
         """
-        # Spreading `self.__dict__` into a new dictionary to prevent
-        # unwanted mutation, as using `dict = self.__dict__` points
-        # to the exact same object. .. Very important (source of tricky errors)
         dict = {**self.__dict__}
         dict['__class__'] = type(self).__name__
         dict['created_at'] = dict['created_at'].isoformat()
