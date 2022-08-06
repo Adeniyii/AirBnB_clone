@@ -211,7 +211,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_update(self, arg: str):
         """Updates an instance based on the class name and id"""
-        args = arg.split()
+        args = arg.split(maxsplit=3)
 
         if not validate_classname(args, check_id=True):
             return
@@ -300,6 +300,8 @@ def is_int(x):
 def parse_str(arg):
     """Parse `arg` to an `int`, `float` or `string`."""
     parsed = re.sub("\"", "", arg)
+    print(arg)
+    print(parsed)
 
     if is_int(parsed):
         return int(parsed)
