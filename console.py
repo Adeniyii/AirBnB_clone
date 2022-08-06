@@ -27,6 +27,7 @@ Typical usage example:
 """
 import re
 import cmd
+import json
 from models import storage
 from models.base_model import BaseModel
 from models.user import User
@@ -49,13 +50,18 @@ class HBNBCommand(cmd.Cmd):
     prompt = "(hbnb) "
 
     def precmd(self, line):
+        """Defines instructions to execute after the input prompt is generated
+        and issued, but before `line`is interpreted. The return value
+        represents the command to be executed by the interpreter.
+        """
         if not line:
             return '\n'
 
+        # print(line)
         # matching user input to this format -> `<class>.<command>([<option>])`
-        pattern = re.compile(r"([a-zA-Z]+)\.(\w+)\((.*)\)")
+
+        pattern = re.compile(r"(\w+)\.(\w+)\((.*)\)")
         match_list = pattern.findall(line)
-        instance_objs = storage.all()
 
         # if no matches were found, hand off execution to default loop
         if not match_list:
@@ -71,9 +77,9 @@ class HBNBCommand(cmd.Cmd):
             # checking for this specifically because `do_count()` handler...
             # ...doesn't exist.
             if match_tuple[1] == "count":
+                instance_objs = storage.all()
                 print(len([
-                    v for _, v in instance_objs.items()
-                    if type(v).__name__ == match_tuple[0]]))
+                    v for _, v in instance_objs.items() if type(v).__name__ == match_tuple[0]]))  # nopep8: E501
                 # trigger the emptyline() method
                 return "\n"
             # returning from precmd() hands off the returned string...
@@ -84,16 +90,18 @@ class HBNBCommand(cmd.Cmd):
         else:
             # Handles if only one arg was provided between the parenthesis
             # e.g User.show(3509c15a-8862-433c-a97f-56d6cb2e6020)
-
-            if len(match_tuple) == 3:
-                return "{} {} {}".format(match_tuple[1], match_tuple[0], re.sub("[\"\']", "", match_tuple[2]))  # nopep8: E501
-
-            elif len(match_tuple) == 5:
-                return "{} {} {} {} {}".format(match_tuple[1], match_tuple[0], match_tuple[2],
-                                               match_tuple[3], match_tuple[4])
-
-         # fallback to default behaviour
-        return super().precmd(line)
+            args = match_tuple[2].split(", ")
+            if len(args) == 1:
+                return "{} {} {}".format(
+                    match_tuple[1], match_tuple[0], re.sub("[\"\']", "", match_tuple[2]))  # nopep8: E501
+            else:
+                # if args[1] contains an object
+                match_json = re.findall(r"{.*}", match_tuple[2])
+                if (match_json):
+                    return "{} {} {} {}".format(
+                        match_tuple[1], match_tuple[0], re.sub("[\"\']", "", args[0]), re.sub("\'", "\"", match_json[0]))  # nopep8: E501
+                return "{} {} {} {} {}".format(
+                    match_tuple[1], match_tuple[0], re.sub("[\"\']", "", args[0]), re.sub("[\"\']", "", args[1]), args[2])  # nopep8: E501
 
     def do_help(self, arg):
         """To get help on a command, type help <topic>\n"""
@@ -101,6 +109,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_EOF(self, line):
         """Inbuilt EOF command to gracefully catch errors\n"""
+        print("")
         return True
 
     def do_quit(self, arg):
@@ -125,7 +134,8 @@ class HBNBCommand(cmd.Cmd):
         """Prints the help message for the `create` command"""
         print('\n'.join([
             "Usage: create <class name>",
-            "\nCreates a new <class name> instance\n"]))
+            "Alternatively: <class name>.create()",
+            "\nCreates a new <class name> instance.\n"]))
 
     def do_show(self, arg):
         """Prints the string representation of an instance"""
@@ -148,7 +158,8 @@ class HBNBCommand(cmd.Cmd):
         """Prints the help message for the `show` command"""
         print('\n'.join([
             "Usage: show <class name> <id>",
-            "\nPrints the string representation of an instance\n"]))
+            "Alternatively: <class name>.show(<id>)",
+            "\nPrints the string representation of an instance.\n"]))
 
     def do_destroy(self, arg):
         """Deletes an instance based on the class name and id"""
@@ -172,7 +183,8 @@ class HBNBCommand(cmd.Cmd):
         """Prints the help message for the `destroy` command"""
         print('\n'.join([
             "Usage: destroy <class name> <id>",
-            "\nDeletes an instance based on the <class name> and <id>\n"]))
+            "Alternatively: <class name>.destroy(<id>)",
+            "\nDeletes an object based on the <class name> and <id>.\n"]))
 
     def do_all(self, arg):
         """Prints string representation of all instances based
@@ -195,14 +207,14 @@ class HBNBCommand(cmd.Cmd):
     def help_all(self):
         """Prints the help message for the `all` command"""
         print('\n'.join([
-            "Usage: all <classname>",
-            "\nPrints a list of str(<class>) for all objects, or objects",
-            "matching <class name>\n"]))
+            "Usage: all [class name]",
+            "Alternatively: <class name>.all()",
+            "\nPrints a list of str(object) for all objects, or objects matching [class name].\n"]))  # nopep8: E501
 
-    def do_update(self, arg):
+    def do_update(self, arg: str):
         """Updates an instance based on the class name and id"""
-        new_arg = arg.replace(', ', ' ')
-        args = new_arg.split()
+
+        args = arg.split(maxsplit=3)
 
         if not validate_classname(args, check_id=True):
             return
@@ -213,6 +225,15 @@ class HBNBCommand(cmd.Cmd):
 
         if req_instance is None:
             print("** no instance found **")
+            return
+
+        match_json = re.findall(r"{.*}", arg)
+
+        if match_json:
+            payload: dict = json.loads(match_json[0])
+            for k, v in payload.items():
+                setattr(req_instance, k, v)
+            storage.save()
             return
 
         if not validate_attrs(args):
@@ -228,7 +249,8 @@ class HBNBCommand(cmd.Cmd):
         """Prints the help message for the `update` command"""
         print('\n'.join([
             "Usage: update <class name> <id> <attribute name> \"<attribute value>\"",  # nopep8: E501
-            "\nUpdates an instance based on the <class name> and <id>\n"]))
+            "Alternatively: <class name>.update(<id>, <attribute name>, \"<attribute value>\")",  # nopep8: E501
+            "\nUpdates an instance based on the <class name> and <id>.\n"]))
 
 
 def validate_classname(args, check_id=False):
