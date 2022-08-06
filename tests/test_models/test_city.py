@@ -10,6 +10,7 @@ c1 = City()
 c2 = City(**c1.to_dict())
 c3 = City("hello", "wait", "in")
 
+
 class TestCity(unittest.TestCase):
     """Test cases for the `City` class."""
 
@@ -33,16 +34,17 @@ class TestCity(unittest.TestCase):
         """Test method for save"""
         old_update = c1.updated_at
         c1.save()
-        self.assertNotEqual(c1.updated_at,old_update)
+        self.assertNotEqual(c1.updated_at, old_update)
 
     def test_todict(self):
         """Test method for dict"""
         a_dict = c2.to_dict()
         self.assertIsInstance(a_dict, dict)
-        self.assertEqual(a_dict['__class__'], type(c2).__name__ )
+        self.assertEqual(a_dict['__class__'], type(c2).__name__)
         self.assertIn('created_at', a_dict.keys())
         self.assertIn('updated_at', a_dict.keys())
         self.assertNotEqual(c1, c2)
 
+
 if __name__ == "__main__":
-	unittest.main()
+    unittest.main()
