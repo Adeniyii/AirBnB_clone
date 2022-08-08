@@ -5,10 +5,8 @@ Unittest classes:
     TestFileStorage_methods
 """
 import os
-import json
 import models
 import unittest
-from datetime import datetime
 from models.base_model import BaseModel
 from models.engine.file_storage import FileStorage
 from models.user import User
@@ -155,7 +153,6 @@ class TestFileStorage_methods(unittest.TestCase):
 
     def test_reload_no_file(self):
         with self.assertRaises(TypeError):
-            #     models.storage.reload()
             self.assertRaises(FileNotFoundError, models.storage.reload())
 
     def test_reload_with_arg(self):
