@@ -34,7 +34,8 @@ class TestBase(unittest.TestCase):
         self.assertEqual(b2.name, "The weeknd")
         self.assertIsInstance(b1.created_at, datetime)
         self.assertIsInstance(b1.created_at, datetime)
-        self.assertEqual(str(type(b1)), "<class 'models.base_model.BaseModel'>")  # nopep8 E501
+        self.assertEqual(str(type(b1)),
+                         "<class 'models.base_model.BaseModel'>")
 
     def test_dict(self):
         """Test method for dict"""
