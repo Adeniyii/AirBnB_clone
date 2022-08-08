@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 """Unit tests for the `city` module.
 """
+import os
 import unittest
+from models.engine.file_storage import FileStorage
 from models import storage
 from models.city import City
 from datetime import datetime
@@ -14,6 +16,15 @@ c3 = City("hello", "wait", "in")
 class TestCity(unittest.TestCase):
     """Test cases for the `City` class."""
 
+    def setUp(self):
+        pass
+
+    def tearDown(self) -> None:
+        """Resets FileStorage data."""
+        FileStorage._FileStorage__objects = {}
+        if os.path.exists(FileStorage._FileStorage__file_path):
+            os.remove(FileStorage._FileStorage__file_path)
+
     def test_params(self):
         """Test method for class attributes"""
         k = f"{type(c1).__name__}.{c1.id}"
@@ -21,7 +32,6 @@ class TestCity(unittest.TestCase):
         self.assertEqual(c3.name, "")
         c1.name = "Abuja"
         self.assertEqual(c1.name, "Abuja")
-        self.assertIn(k, storage.all())
 
     def test_init(self):
         """Test method for public instances"""
