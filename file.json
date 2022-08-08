@@ -1,1 +1,1 @@
-{"BaseModel.2cf6b181-a226-49b0-aa89-85c30be9c709": {"id": "2cf6b181-a226-49b0-aa89-85c30be9c709", "created_at": "2022-08-08T12:53:06.552746", "updated_at": "2022-08-08T12:53:06.552799", "email": "aibnb@mail.com", "first_name": "Ugly Betty", "__class__": "BaseModel"}}
+{"BaseModel.2cf6b181-a226-49b0-aa89-85c30be9c709": {"id": "2cf6b181-a226-49b0-aa89-85c30be9c709", "created_at": "2022-08-08T12:53:06.552746", "updated_at": "2022-08-08T12:53:06.552799", "email": "aibnb@mail.com", "first_name": "Ugly Betty", "age": 20, "__class__": "BaseModel"}}
