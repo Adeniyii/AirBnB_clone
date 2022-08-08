@@ -1,5 +1,7 @@
 """Testing the `base_model` module."""
+import json
 import os
+import time
 import unittest
 import uuid
 from datetime import datetime
@@ -52,10 +54,41 @@ class TestBase(unittest.TestCase):
 
     def test_save(self):
         """Test method for save"""
-        b1 = BaseModel()
-        old_update = b1.updated_at
-        b1.save()
-        self.assertNotEqual(b1.updated_at, old_update)
+        b = BaseModel()
+        time.sleep(0.5)
+        date_now = datetime.now()
+        b.save()
+        diff = b.updated_at - date_now
+        self.assertTrue(abs(diff.total_seconds()) < 0.01)
+
+    def test_save_storage(self):
+        """Tests that storage.save() is called from save()."""
+        b = BaseModel()
+        b.save()
+        key = "{}.{}".format(type(b).__name__, b.id)
+        d = {key: b.to_dict()}
+        self.assertTrue(os.path.isfile(FileStorage._FileStorage__file_path))
+        with open(FileStorage._FileStorage__file_path,
+                  "r", encoding="utf-8") as f:
+            self.assertEqual(len(f.read()), len(json.dumps(d)))
+            f.seek(0)
+            self.assertEqual(json.load(f), d)
+
+    def test_save_no_args(self):
+        """Tests save() with no arguments."""
+        self.resetStorage()
+        with self.assertRaises(TypeError) as e:
+            BaseModel.save()
+        msg = "save() missing 1 required positional argument: 'self'"
+        self.assertEqual(str(e.exception), msg)
+
+    def test_save_excess_args(self):
+        """Tests save() with too many arguments."""
+        self.resetStorage()
+        with self.assertRaises(TypeError) as e:
+            BaseModel.save(self, 98)
+        msg = "save() takes 1 positional argument but 2 were given"
+        self.assertEqual(str(e.exception), msg)
 
     def test_str(self):
         """Test method for str representation"""
