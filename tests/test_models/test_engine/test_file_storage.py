@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """Defines unittests for models/engine/file_storage.py.
+
 Unittest classes:
     TestFileStorage_instantiation
     TestFileStorage_methods
@@ -40,14 +41,24 @@ class TestFileStorage_instantiation(unittest.TestCase):
 class TestFileStorage_methods(unittest.TestCase):
     """Unittests for testing methods of the FileStorage class."""
 
+    @classmethod
     def setUp(self):
-        pass
+        try:
+            os.rename("file.json", "tmp")
+        except IOError:
+            pass
 
-    def tearDown(self) -> None:
-        """Resets FileStorage data."""
+    @classmethod
+    def tearDown(self):
+        try:
+            os.remove("file.json")
+        except IOError:
+            pass
+        try:
+            os.rename("tmp", "file.json")
+        except IOError:
+            pass
         FileStorage._FileStorage__objects = {}
-        if os.path.exists(FileStorage._FileStorage__file_path):
-            os.remove(FileStorage._FileStorage__file_path)
 
     def test_all(self):
         self.assertEqual(dict, type(models.storage.all()))
@@ -150,6 +161,9 @@ class TestFileStorage_methods(unittest.TestCase):
         self.assertIn("City." + cy.id, objs)
         self.assertIn("Amenity." + am.id, objs)
         self.assertIn("Review." + rv.id, objs)
+
+    def test_reload_no_file(self):
+        self.assertRaises(FileNotFoundError, models.storage.reload())
 
     def test_reload_with_arg(self):
         with self.assertRaises(TypeError):
