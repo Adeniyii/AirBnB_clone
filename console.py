@@ -159,8 +159,7 @@ class HBNBCommand(cmd.Cmd):
         storage.save()
 
     def do_all(self, arg):
-        """Usage: all or all <class> or <class>.all()
-        Prints string representation of all instances.
+        """Prints string representation of all instances.
         """
         args = arg.split()
         all_objs = storage.all()
