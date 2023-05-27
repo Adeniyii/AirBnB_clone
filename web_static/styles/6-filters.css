@@ -75,6 +75,21 @@
 	gap: 30px;
 }
 
+.locations > .popover > li > ul {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.amenities > .popover {
+	gap: 4px;
+}
+
 .popover > h2 {
 	font-size: 16px;
+}
+
+.popover ul {
+	padding-left: 16px;
+	padding-top: 4px;
 }

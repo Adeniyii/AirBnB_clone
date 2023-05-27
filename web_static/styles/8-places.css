@@ -1,0 +1,105 @@
+.places-container > article {
+	width: 390px;
+	padding: 20px;
+	margin: 20px;
+	border: 1px solid #FF5A5F;
+	border-radius: 4px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.places-container .price_by_night {
+	min-width: 60px;
+	height: 60px;
+	border-radius: 50%;
+	color: #FF5A5F;
+	font-size: 30px;
+	border: 1px solid #FF5A5F;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.places-container .information {
+	display: flex;
+	justify-content: space-between;
+	height: 80px;
+	border-block: 1px solid #DDD;
+	width: 100%;
+	margin-top: 30px;
+	padding-block: 8px;
+}
+
+.places-container .information > .max_guest {
+	display: flex;
+	flex-direction: column;
+	justify-content: end;
+	align-items: center;
+	background-image: url("/AirBnB_clone/web_static/images/icon_group.png");
+	background-repeat: no-repeat;
+	background-position: top;
+	background-size: 40px;
+}
+
+.places-container .information > .number_rooms {
+	display: flex;
+	flex-direction: column;
+	justify-content: end;
+	align-items: center;
+	background-image: url("/AirBnB_clone/web_static/images/icon_bed.png");
+	background-repeat: no-repeat;
+	background-position: top;
+	background-size: 40px;
+}
+
+.places-container .information > .number_bathrooms {
+	display: flex;
+	flex-direction: column;
+	background-image: url("/AirBnB_clone/web_static/images/icon_bath.png");
+	background-repeat: no-repeat;
+	background-position: top;
+	justify-content: end;
+	align-items: center;
+	background-size: 40px;
+}
+
+.places-container .user {
+	margin-top: 30px;
+	align-self: start;
+	display: block;
+}
+
+.places-container .description {
+	margin-top: 30px;
+}
+
+.places-container > article h2 {
+	font-size: 30px;
+}
+
+.places-container > article > div {
+	display: flex;
+	width: 100%;
+	justify-content: space-between;
+	gap: 30px;
+}
+
+.places {
+	width: 100%;
+	flex-direction: column;
+	margin-top: 30px;
+}
+
+.places > .places-container {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.places > h1 {
+	font-size: 30px;
+	text-align: left;
+}
